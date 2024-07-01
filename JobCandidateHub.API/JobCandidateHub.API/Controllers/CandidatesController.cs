@@ -10,6 +10,7 @@ namespace JobCandidateHub.API.Controllers
     {
         private readonly ILogger<CandidatesController> _logger;
         private readonly ICandidateService _candidateService;
+     
         public CandidatesController(ILogger<CandidatesController> logger, ICandidateService candidateService)
         {
             _logger = logger;
@@ -19,6 +20,13 @@ namespace JobCandidateHub.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CandidateInputModel candidate)
         {
+            var validator = new CandidateInputModelValidator();
+
+            var validate = validator.Validate(candidate);
+            if (!validate.IsValid)
+            {
+                return BadRequest(ResponseResult.Failed(ErrorCode.ValidationError, validate.Errors.Select(x => x.ErrorMessage).ToArray()));
+            }
             await _candidateService.Add(candidate);
 
             return Ok(ResponseResult.Succeeded());
