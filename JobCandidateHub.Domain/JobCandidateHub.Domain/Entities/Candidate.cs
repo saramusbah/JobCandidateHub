@@ -1,4 +1,6 @@
-﻿namespace JobCandidateHub.Domain.Entities
+﻿using JobCandidateHub.Domain.Models;
+
+namespace JobCandidateHub.Domain.Entities
 {
     public class Candidate
     {
@@ -19,5 +21,22 @@
         public string GitHubProfileUrl { get; set; }
 
         public required string FreeTextComment { get; set; }
+
+        public static Candidate CreateFromInputModel(CandidateInputModel inputModel)
+        {
+            Candidate candidate = new()
+            {
+                FirstName = inputModel.FirstName,
+                LastName = inputModel.LastName,
+                Email = inputModel.Email,
+                PhoneNumber = inputModel.PhoneNumber,
+                PreferredCallTime = inputModel.PreferredCallTime,
+                LinkedInProfileUrl = inputModel.LinkedInProfileUrl,
+                GitHubProfileUrl = inputModel.GitHubProfileUrl,
+                FreeTextComment = inputModel.FreeTextComment,
+            };
+
+            return candidate;
+        }
     }
 }

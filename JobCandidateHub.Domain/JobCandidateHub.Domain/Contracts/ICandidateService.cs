@@ -4,7 +4,7 @@ namespace JobCandidateHub.Domain.Contracts
 {
     public interface ICandidateService
     {
-        Task Add(CandidateInputModel candidate);
+        Task AddOrUpdate(CandidateInputModel candidate);
         Task<List<CandidateOutputModel>> List(int page, int pageSize);
     }
 }

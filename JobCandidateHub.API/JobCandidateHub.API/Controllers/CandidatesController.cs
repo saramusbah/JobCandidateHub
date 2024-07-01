@@ -16,7 +16,7 @@ namespace JobCandidateHub.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(CandidateInputModel candidate)
+        public async Task<IActionResult> AddOrUpdate(CandidateInputModel candidate)
         {
             var validator = new CandidateInputModelValidator();
 
@@ -25,7 +25,7 @@ namespace JobCandidateHub.API.Controllers
             {
                 return BadRequest(ResponseResult.Failed(ErrorCode.ValidationError, validate.Errors.Select(x => x.ErrorMessage).ToArray()));
             }
-            await _candidateService.Add(candidate);
+            await _candidateService.AddOrUpdate(candidate);
 
             return Ok(ResponseResult.Succeeded());
         }

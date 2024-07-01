@@ -14,28 +14,26 @@ namespace JobCandidateHub.Data.Services
             _dbContext = dbContext;
         }
 
-
-        public async Task Add(CandidateInputModel candidate)
+        public async Task AddOrUpdate(CandidateInputModel candidate)
         {
-            Candidate newCandidate = new()
-            {
-                FirstName = candidate.FirstName,
-                LastName = candidate.LastName,
-                Email = candidate.Email,
-                PhoneNumber = candidate.PhoneNumber,
-                PreferredCallTime = candidate.PreferredCallTime,
-                LinkedInProfileUrl = candidate.LinkedInProfileUrl,
-                GitHubProfileUrl = candidate.GitHubProfileUrl,
-                FreeTextComment = candidate.FreeTextComment,
-            };
+            Candidate newCandidate = Candidate.CreateFromInputModel(candidate);
 
-            await _dbContext.Candidates.AddAsync(newCandidate);
+            var existingEmail = await _dbContext.Candidates.Where(c => c.Email == candidate.Email).FirstOrDefaultAsync();
+            if (existingEmail != null)
+            {
+                UpdateExistingCandidate(candidate, existingEmail);
+            }
+            else
+            {
+                await _dbContext.Candidates.AddAsync(newCandidate);
+            }
+
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<List<CandidateOutputModel>> List(int page, int pageSize)
         {
-            return await _dbContext.Candidates.Select(c =>
+            return await _dbContext.Candidates.AsNoTracking().Select(c =>
             new CandidateOutputModel
             {
                 FullName = c.FirstName + " " + c.LastName,
@@ -46,6 +44,18 @@ namespace JobCandidateHub.Data.Services
                 GitHubProfileUrl = c.GitHubProfileUrl,
                 FreeTextComment = c.FreeTextComment
             }).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
+        private void UpdateExistingCandidate(CandidateInputModel candidate, Candidate existingEmail)
+        {
+            existingEmail.FirstName = candidate.FirstName;
+            existingEmail.LastName = candidate.LastName;
+            existingEmail.Email = candidate.Email;
+            existingEmail.PhoneNumber = candidate.PhoneNumber;
+            existingEmail.PreferredCallTime = candidate.PreferredCallTime;
+            existingEmail.FreeTextComment = candidate.FreeTextComment;
+            existingEmail.GitHubProfileUrl = candidate.GitHubProfileUrl;
+            existingEmail.LinkedInProfileUrl = candidate.LinkedInProfileUrl;
         }
     }
 }

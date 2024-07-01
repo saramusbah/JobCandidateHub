@@ -2,7 +2,7 @@
 
 namespace JobCandidateHub.Domain.Models
 {
-    public class CandidateInputModel 
+    public class CandidateInputModel
     {
         public required string FirstName { get; set; }
 
@@ -21,7 +21,7 @@ namespace JobCandidateHub.Domain.Models
         public required string FreeTextComment { get; set; }
     }
 
-    public class CandidateInputModelValidator: AbstractValidator<CandidateInputModel>
+    public class CandidateInputModelValidator : AbstractValidator<CandidateInputModel>
     {
         public CandidateInputModelValidator()
         {
