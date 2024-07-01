@@ -8,12 +8,10 @@ namespace JobCandidateHub.API.Controllers
     [Route("api/[controller]")]
     public class CandidatesController : ControllerBase
     {
-        private readonly ILogger<CandidatesController> _logger;
         private readonly ICandidateService _candidateService;
-     
-        public CandidatesController(ILogger<CandidatesController> logger, ICandidateService candidateService)
+
+        public CandidatesController(ICandidateService candidateService)
         {
-            _logger = logger;
             _candidateService = candidateService;
         }
 
