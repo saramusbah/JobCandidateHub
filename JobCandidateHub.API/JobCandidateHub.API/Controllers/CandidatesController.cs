@@ -23,5 +23,12 @@ namespace JobCandidateHub.API.Controllers
 
             return Ok(ResponseResult.Succeeded());
         }
+
+        [HttpGet]
+        public async Task<IActionResult> List(int page = 1, int pageSize = 10)
+        {
+            var result = await _candidateService.List(page, pageSize);
+            return Ok(ResponseResult.SucceededWithData(result));
+        }
     }
 }

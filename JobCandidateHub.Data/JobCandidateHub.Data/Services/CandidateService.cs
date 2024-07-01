@@ -1,6 +1,7 @@
 ﻿using JobCandidateHub.Domain.Contracts;
 using JobCandidateHub.Domain.Entities;
 using JobCandidateHub.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobCandidateHub.Data.Services
 {
@@ -30,6 +31,21 @@ namespace JobCandidateHub.Data.Services
 
             await _dbContext.Candidates.AddAsync(newCandidate);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<CandidateOutputModel>> List(int page, int pageSize)
+        {
+            return await _dbContext.Candidates.Select(c =>
+            new CandidateOutputModel
+            {
+                FullName = c.FirstName + " " + c.LastName,
+                Email = c.Email,
+                PhoneNumber = c.PhoneNumber,
+                PreferredCallTime = c.PreferredCallTime,
+                LinkedInProfileUrl = c.LinkedInProfileUrl,
+                GitHubProfileUrl = c.GitHubProfileUrl,
+                FreeTextComment = c.FreeTextComment
+            }).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         }
     }
 }
